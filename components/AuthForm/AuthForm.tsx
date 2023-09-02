@@ -1,35 +1,29 @@
-"use client"
-import { useState } from 'react'
+import SubmitButton from "../SubmitButton/SubmitButton"
 
 interface AuthFormProps {
-  handleSubmit: (e: any, email: string, password: string) => void
+  action: (formData: FormData) => Promise<void>
 }
 
-const AuthForm = ({ handleSubmit }: AuthFormProps) => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-
+const AuthForm = ({ action }: AuthFormProps) => {
   return (
-    <form onSubmit={ (e) => handleSubmit(e, email, password) }>
+    <form action={ action }>
       <label>
         <span>Email:</span>
         <input 
+          name="email"
           type="email" 
-          onChange={ (e) => setEmail(e.target.value) }
-          value={ email }
           required
         />
       </label>
       <label>
         <span>Password:</span>
         <input 
+          name="password"
           type="password" 
-          onChange={ (e) => setPassword(e.target.value) }
-          value={ password }
           required
         />
       </label>
-      <button className="btn-primary">Submit</button>
+      <SubmitButton />
     </form>
   )
 }

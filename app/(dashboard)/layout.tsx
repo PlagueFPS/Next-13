@@ -18,7 +18,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
   return (
     <>
       <Navbar user={ data.session?.user } />
-      {children}
+      { children }
     </>
   )
 }

@@ -15,7 +15,7 @@ export async function addTicket(formData: FormData) {
     })
 
   if (error) {
-    throw new Error('Could not add the new ticket.')
+    throw new Error('Failed to add the new ticket.')
   }
 
   revalidatePath('/tickets')
@@ -27,9 +27,44 @@ export async function deleteTicket(id: string) {
   const { error } = await supabase.from('tickets').delete().eq('id', id)
 
   if (error) {
-    throw new Error('Could not delete the ticket.')
+    throw new Error('Failed to delete the ticket.')
   }
 
   revalidatePath('/tickets')
   redirect('/tickets')
+}
+
+export async function handleSignUp(formData: FormData) {
+  const { email, password }: any = Object.fromEntries(formData)
+  const supabase = createServerActionClient({ cookies })
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/auth/callback`
+    }
+  })
+
+  if (!error) {
+    redirect('/verify')
+  }
+  else if (error) {
+    throw new Error('Failed to Sign Up')
+  }
+}
+
+export async function handleLogIn(formData: FormData) {
+  const { email, password }: any = Object.fromEntries(formData)
+  const supabase = createServerActionClient({ cookies })
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  })
+
+  if (!error) {
+    redirect('/')
+  }
+  else if (error) {
+    throw new Error('Failed to Log In')
+  }
 }
