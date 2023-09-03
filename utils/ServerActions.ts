@@ -23,7 +23,7 @@ export async function addTicket(formData: FormData) {
   redirect('/tickets')
 }
 
-export async function deleteTicket(id: string) {
+export async function deleteTicket(id: number) {
   const supabase = createServerActionClient<Database>({ cookies })
   const { error } = await supabase.from('tickets').delete().eq('id', id)
 
@@ -67,5 +67,33 @@ export async function handleLogIn(formData: FormData) {
   }
   else if (error) {
     throw new Error('Failed to Log In')
+  }
+}
+
+export async function resetPassword(formData: FormData) {
+  const { email }: any = Object.fromEntries(formData)
+  const supabase = createServerActionClient<Database>({ cookies })
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/auth/reset?next=${process.env.NEXT_PUBLIC_WEBSITE_URL}/update-password`
+  })
+
+  if (!error) {
+    redirect('/verify')
+  }
+  else if (error) {
+    throw new Error('Failed to reset password')
+  }
+}
+
+export async function updatePassword(formData: FormData) {
+  const { password }: any = Object.fromEntries(formData)
+  const supabase = createServerActionClient<Database>({ cookies })
+  const { error } = await supabase.auth.updateUser({ password: password })
+
+  if (!error) {
+    redirect('/')
+  }
+  else if (error) {
+    throw new Error('Failed to Update Password')
   }
 }

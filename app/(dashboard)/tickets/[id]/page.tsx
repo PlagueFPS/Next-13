@@ -2,6 +2,7 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { notFound } from "next/navigation"
 import DeleteTicket from '@/components/DeleteTicket/DeleteTicket'
+import { Database } from '@/interfaces/supabase'
 
 export const dynamicParams = true // default val = true
 
@@ -12,7 +13,7 @@ interface TicketDetailsProps {
 }
 
 export async function generateMetadata({ params }: TicketDetailsProps) {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = createServerComponentClient<Database>({ cookies })
   const { data: ticket } = await supabase.from('tickets').select().eq('id', params.id).single()
  
   return {
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: TicketDetailsProps) {
 }
 
 async function getTicket(id: string) {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = createServerComponentClient<Database>({ cookies })
   const { data } = await supabase.from('tickets').select().eq('id', id).single()
 
   if (!data) {
@@ -33,8 +34,8 @@ async function getTicket(id: string) {
 
 
 export default async function TicketDetails({ params }: TicketDetailsProps) {
-  const ticket: Ticket = await getTicket(params.id)
-  const supabase = createServerComponentClient({ cookies })
+  const ticket = await getTicket(params.id)
+  const supabase = createServerComponentClient<Database>({ cookies })
   const { data } = await supabase.auth.getSession()
 
   return (

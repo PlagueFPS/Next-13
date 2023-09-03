@@ -66,7 +66,8 @@ form {
     rounded-md 
     block 
     mx-auto 
-    min-w-fit w-1/4;
+    min-w-fit w-1/3
+    relative;
 }
 form label {
   @apply block;
@@ -81,6 +82,11 @@ form select {
 }
 form button {
   @apply block mx-auto;
+}
+
+form a {
+  @apply absolute top-2 right-4 text-primary underline hover:no-underline
+  text-xs;
 }
 
 /* feedback styles */

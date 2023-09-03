@@ -4,7 +4,7 @@ import { TiDelete } from 'react-icons/ti'
 import { deleteTicket } from "@/utils/ServerActions"
 
 interface DeleteTicketProps {
-  id: string
+  id: number
 }
 
 const DeleteTicket = ({ id }: DeleteTicketProps) => {
