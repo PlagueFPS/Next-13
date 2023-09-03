@@ -1,35 +1,36 @@
+import { Database } from '@/interfaces/supabase'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import Link from "next/link"
 
 async function getTickets() {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = createServerComponentClient<Database>({ cookies })
   const { data, error } = await supabase.from('tickets').select()
 
   if (error) {
     console.log(error.message)
   }
 
-  return data as Ticket[]
+  return data
 }
 
 export default async function TicketList() {
-  const tickets: Ticket[] = await getTickets()
+  const tickets = await getTickets()
 
   return (
     <>
-      {tickets.map((ticket) => (
-        <div key={ticket.id} className="card my-5">
+      { tickets?.map(ticket => (
+        <div key={ ticket.id } className="card my-5">
           <Link href={`/tickets/${ticket.id}`}>
-            <h3>{ticket.title}</h3>
-            <p>{ticket.body.slice(0, 200)}...</p>
+            <h3>{ ticket.title }</h3>
+            <p>{ ticket.body?.slice(0, 200) }...</p>
             <div className={`pill ${ticket.priority}`}>
-              {ticket.priority} priority
+              { ticket.priority } priority
             </div>
           </Link>
         </div>
       ))}
-      {tickets.length === 0 && (
+      {tickets?.length === 0 && (
         <p className="text-center">There are no open tickets, yay!</p>
       )}
     </>

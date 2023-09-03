@@ -3,10 +3,11 @@ import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { Database } from '@/interfaces/supabase'
 
 export async function addTicket(formData: FormData) {
   const ticket = Object.fromEntries(formData)
-  const supabase = createServerActionClient({ cookies })
+  const supabase = createServerActionClient<Database>({ cookies })
   const { data: { session } } = await supabase.auth.getSession()
   const { error } = await supabase.from('tickets')
     .insert({
@@ -23,7 +24,7 @@ export async function addTicket(formData: FormData) {
 }
 
 export async function deleteTicket(id: string) {
-  const supabase = createServerActionClient({ cookies })
+  const supabase = createServerActionClient<Database>({ cookies })
   const { error } = await supabase.from('tickets').delete().eq('id', id)
 
   if (error) {
@@ -36,7 +37,7 @@ export async function deleteTicket(id: string) {
 
 export async function handleSignUp(formData: FormData) {
   const { email, password }: any = Object.fromEntries(formData)
-  const supabase = createServerActionClient({ cookies })
+  const supabase = createServerActionClient<Database>({ cookies })
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -55,7 +56,7 @@ export async function handleSignUp(formData: FormData) {
 
 export async function handleLogIn(formData: FormData) {
   const { email, password }: any = Object.fromEntries(formData)
-  const supabase = createServerActionClient({ cookies })
+  const supabase = createServerActionClient<Database>({ cookies })
   const { error } = await supabase.auth.signInWithPassword({
     email,
     password
