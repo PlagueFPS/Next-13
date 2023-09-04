@@ -71,9 +71,9 @@ export async function handleLogIn(formData: FormData) {
 }
 
 export async function resetPassword(formData: FormData) {
-  const { email }: any = Object.fromEntries(formData)
+  const { email } = Object.fromEntries(formData)
   const supabase = createServerActionClient<Database>({ cookies })
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  const { error } = await supabase.auth.resetPasswordForEmail(email.toString(), {
     redirectTo: `${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/auth/reset?next=${process.env.NEXT_PUBLIC_WEBSITE_URL}/update-password`
   })
 
@@ -86,9 +86,9 @@ export async function resetPassword(formData: FormData) {
 }
 
 export async function updatePassword(formData: FormData) {
-  const { password }: any = Object.fromEntries(formData)
+  const { password } = Object.fromEntries(formData)
   const supabase = createServerActionClient<Database>({ cookies })
-  const { error } = await supabase.auth.updateUser({ password: password })
+  const { error } = await supabase.auth.updateUser({ password: password.toString() })
 
   if (!error) {
     redirect('/')
